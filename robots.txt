@@ -1,5 +1,5 @@
 User-agent: *
 Disallow: /
-# На боевом домене заменить на:
+# На боевом домене:
 # Disallow:
 # Sitemap: https://<домен>/sitemap.xml

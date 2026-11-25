@@ -72,6 +72,40 @@
     if (t) t.scrollBy({ left: Number(b.dataset.dir) * t.clientWidth * 0.8, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
 
+  // ---- Бренды: два ряда едут в разные стороны по кругу, пауза при наведении ----
+  const rows = [...document.querySelectorAll('[data-marquee]')];
+  if (rows.length) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const SPEED = 28; // px в секунду
+    const state = rows.map((el) => ({ el, track: el.querySelector('.marquee__track'), dir: Number(el.dataset.marquee), pos: 0, target: null, half: 0 }));
+    const measure = () => state.forEach((s) => { s.half = s.track.scrollWidth / 2; if (s.dir > 0 && s.pos === 0) s.pos = -s.half; });
+    let paused = false, visible = true, last = performance.now();
+    const rail = rows[0].closest('.brands3__rail');
+    rail.addEventListener('mouseenter', () => { paused = true; });
+    rail.addEventListener('mouseleave', () => { paused = false; });
+    rail.addEventListener('focusin', () => { paused = true; });
+    rail.addEventListener('focusout', () => { paused = false; });
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(rail);
+    rail.classList.add('is-js');
+    measure(); window.addEventListener('resize', measure);
+    const wrap = (s) => { if (s.half) { while (s.pos <= -s.half) s.pos += s.half; while (s.pos > 0) s.pos -= s.half; } };
+    document.querySelectorAll('[data-marquee-step]').forEach((b) => b.addEventListener('click', () => {
+      const step = Number(b.dataset.marqueeStep);
+      state.forEach((s) => { const card = s.track.querySelector('li').getBoundingClientRect().width + 16; s.target = s.pos - step * card; });
+    }));
+    const tick = (now) => {
+      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      state.forEach((s) => {
+        if (s.target !== null) { const d = s.target - s.pos; s.pos += d * Math.min(1, dt * 8); if (Math.abs(d) < 0.5) { s.pos = s.target; s.target = null; } }
+        else if (!reduce && !paused && visible) s.pos += s.dir * SPEED * dt;
+        if (s.target === null) wrap(s);
+        s.track.style.transform = `translate3d(${s.pos}px,0,0)`;
+      });
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
   // ---- Модальное окно заявки ----
   const modal = document.getElementById('lead-modal');
   const TITLES = { consult: 'Получить консультацию', price: 'Запросить цену / КП', equip: 'Заявка на комплексное оснащение' };

@@ -821,3 +821,32 @@ html { font-size: clamp(16px, calc(9.6px + 0.444vw), 18px); }
   .i3 { transition: transform var(--dur-short) var(--ease-out); }
   .flow3__steps li:hover .i3, .why__stats div:hover .i3, .hero3__perks li:hover .i3 { transform: translateY(-3px) rotate(-3deg); }
 }
+
+/* ===== Бренды: бегущие ряды (верхний вправо, нижний влево), по кругу ===== */
+.brands3__rail { display: grid; gap: var(--space-md); }
+.marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, var(--color-ink) 4%, var(--color-ink) 96%, transparent); mask-image: linear-gradient(90deg, transparent, var(--color-ink) 4%, var(--color-ink) 96%, transparent); }
+.marquee__track { display: flex; gap: var(--space-md); width: max-content; list-style: none; margin: 0; padding: var(--space-2xs) 0; will-change: transform; }
+.marquee__track li { flex: none; width: clamp(9rem, 11vw, 13rem); }
+.marquee__track li > * { display: grid; place-items: center; height: 5rem; padding: var(--space-sm) var(--space-md); background: var(--color-white); border-radius: var(--radius-sm); box-shadow: var(--shadow-card); transition: box-shadow var(--dur-short) var(--ease-out); }
+.marquee__track a:hover { box-shadow: var(--shadow-lift); }
+.marquee__track img { max-height: 3rem; width: auto; max-width: 100%; object-fit: contain; }
+.brands3__rail:not(.is-js) .marquee { overflow-x: auto; }
+.brands3__rail:not(.is-js) .marquee__track li[aria-hidden] { display: none; }
+@media (max-width: 60rem) { .marquee__track li { width: 9rem; } .marquee__track li > * { height: 4.25rem; } }
+
+/* ===== Консультация: ниже и плотнее на широком экране ===== */
+.consult3__in { grid-template-columns: minmax(0, 1.15fr) auto minmax(0, 1fr); height: clamp(15rem, 15vw, 19rem); min-height: 0; gap: var(--space-2xl); }
+.consult3__facts { list-style: none; margin: var(--space-md) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-lg); font-size: 0.875rem; color: var(--color-on-navy); }
+.consult3__facts li { display: flex; align-items: center; gap: var(--space-xs); }
+.consult3__facts .i { color: var(--color-tg); }
+.consult3__cta { display: grid; gap: var(--space-sm); justify-items: start; }
+.consult3__phone { display: inline-flex; align-items: center; gap: var(--space-xs); padding-block: var(--space-2xs); color: var(--color-white); font-weight: 700; text-decoration: none; }
+.consult3__phone:hover { text-decoration: underline; }
+.consult3__phone .i { color: var(--color-tg); }
+.consult3__img { position: relative; align-self: stretch; height: 100%; }
+.consult3__img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 40%; }
+@media (max-width: 75rem) { .consult3__in { grid-template-columns: minmax(0, 1fr) auto; height: auto; padding-block: var(--space-xl); } .consult3__img { display: none; } }
+@media (max-width: 60rem) { .consult3__in { grid-template-columns: minmax(0, 1fr); } }
+
+/* ===== Подвал: соцсети и «наверх» снова по центру кружка ===== */
+.ftr .social a, .ftr .totop { display: grid; place-items: center; padding: 0; margin: 0; }

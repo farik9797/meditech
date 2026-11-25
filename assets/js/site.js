@@ -106,6 +106,65 @@
     requestAnimationFrame(tick);
   }
 
+  // ---- Поиск во всплывающем окне: живые результаты по названию, модели, бренду, разделу ----
+  const sm = document.getElementById('search-modal');
+  if (sm) {
+    const root = sm.dataset.root || './';
+    const input = sm.querySelector('#sm-q'), list = sm.querySelector('[data-search-list]'), hint = sm.querySelector('[data-search-hint]');
+    const empty = sm.querySelector('[data-search-empty]'), all = sm.querySelector('[data-search-all]');
+    let index = null;
+    const load = () => index ? Promise.resolve(index) : fetch(root + 'assets/search.json').then((r) => r.json()).then((d) => (index = d.map((x) => ({ ...x, h: (x.n + ' ' + x.b + ' ' + x.c).toLowerCase() }))));
+    const esc = (t) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const mark = (t, q) => { const i = t.toLowerCase().indexOf(q); return i < 0 ? esc(t) : esc(t.slice(0, i)) + '<mark>' + esc(t.slice(i, i + q.length)) + '</mark>' + esc(t.slice(i + q.length)); };
+    const render = () => {
+      const q = input.value.trim().toLowerCase();
+      hint.hidden = !!q; all.hidden = !q; empty.hidden = true; list.innerHTML = '';
+      if (!q) return;
+      const words = q.split(/\s+/);
+      const res = index.filter((x) => words.every((w) => x.h.includes(w))).slice(0, 8);
+      all.href = root + 'catalog/?q=' + encodeURIComponent(q);
+      empty.hidden = res.length > 0;
+      list.innerHTML = res.map((x) => `<li><a href="${root}${x.u}">${x.i ? `<img src="${root}${x.i}" alt="" width="56" height="56" loading="lazy">` : '<span class="ph"></span>'}<span><strong>${mark(x.n, words[0])}</strong><small>${esc([x.b, x.c].filter(Boolean).join(', '))}</small></span></a></li>`).join('');
+    };
+    const open = () => { if (typeof sm.showModal !== 'function') { location.href = root + 'catalog/#q'; return; } sm.showModal(); input.focus(); load().then(render); track('open_search'); };
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('[data-search-open]')) { e.preventDefault(); open(); }
+      if (e.target.closest('[data-search-close]')) sm.close();
+      const chip = e.target.closest('[data-search-q]'); if (chip) { input.value = chip.dataset.searchQ; load().then(render); input.focus(); }
+    });
+    document.addEventListener('keydown', (e) => { if ((e.key === '/' && !/input|textarea|select/i.test(document.activeElement.tagName)) || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k')) { e.preventDefault(); open(); } });
+    input.addEventListener('input', () => load().then(render));
+    sm.addEventListener('click', (e) => { if (e.target === sm) sm.close(); });
+    sm.querySelector('form').addEventListener('submit', () => track('catalog_search'));
+  }
+
+  // ---- Плавное появление блоков при прокрутке (GSAP + ScrollTrigger) ----
+  const html = document.documentElement;
+  const startReveal = () => {
+    if (!html.classList.contains('reveal-on') || !window.gsap || !window.ScrollTrigger) { html.classList.remove('reveal-on'); return; }
+    const { gsap, ScrollTrigger } = window;
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.defaults({ ease: 'power3.out', duration: 0.8 });
+    // первый экран: сразу, по очереди
+    const heroParts = document.querySelectorAll('.hero3__text > *, .hero3__perks li, .phero__text > *, .phero .crumbs');
+    gsap.fromTo(heroParts, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, stagger: 0.08, delay: 0.1 });
+    gsap.fromTo('.phero__media img, .hero3__media img, .hero3__media video', { scale: 1.06 }, { scale: 1, duration: 1.6, ease: 'power2.out' });
+    // заголовки разделов и крупные блоки
+    gsap.utils.toArray('.sec-head3, .brands3__head, .faq4__head, .order__text, .why__in, .flow3__in, .consult3__in, .svc-detail__text, .about-group > div, .product__gallery, .product__info, .tabs, .formcard, .article, .contacts3 .map, .cbrowse .filters').forEach((el) => {
+      if (el.closest('.hero3, .phero:not(.phero--compact)')) return;
+      gsap.fromTo(el, { autoAlpha: 0, y: 32 }, { autoAlpha: 1, y: 0, scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+    });
+    // карточки — пачками, по очереди
+    ScrollTrigger.batch('.dir, .pcard3, .ncard3, .pcard, .scard3, .brand-grid li, .ways article, .steps4 li, .svc-points li, .about-cols p, .about-group__list li, .contact-cards li, .why__stats > div, .flow3__steps li, .faq__list details, .brands3__rail', {
+      start: 'top 92%', once: true,
+      onEnter: (els) => gsap.fromTo(els, { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, stagger: 0.07, duration: 0.7, overwrite: true }),
+    });
+    // карточки, которые уже видны при загрузке и не попадут в batch
+    ScrollTrigger.refresh();
+    html.classList.add('reveal-ready');
+  };
+  if (window.gsap) startReveal(); else window.addEventListener('load', startReveal);
+
   // ---- Модальное окно заявки ----
   const modal = document.getElementById('lead-modal');
   const TITLES = { consult: 'Получить консультацию', price: 'Запросить цену / КП', equip: 'Заявка на комплексное оснащение' };
@@ -173,6 +232,7 @@
         c.hidden = !ok; if (ok) n++;
       });
       count.textContent = n; empty.hidden = n > 0;
+      if (window.ScrollTrigger) requestAnimationFrame(() => window.ScrollTrigger.refresh());
       const u = new URLSearchParams();
       if (q) u.set('q', q); if (cat) u.set('cat', cat); brandsSel.forEach((b) => u.append('brand', b)); if (stock !== '') u.set('stock', stock);
       history.replaceState(null, '', u.toString() ? '?' + u : location.pathname);

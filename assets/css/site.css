@@ -800,3 +800,24 @@ html { font-size: clamp(16px, calc(9.6px + 0.444vw), 18px); }
 .pcard__img { position: relative; min-height: 0; overflow: hidden; }
 .pcard__img img { position: absolute; inset: var(--space-md); width: calc(100% - 2 * var(--space-md)); height: calc(100% - 2 * var(--space-md)); max-width: none; max-height: none; object-fit: contain; }
 .pcard__img .ph--prod { position: absolute; inset: var(--space-xs); height: auto; }
+
+/* проекты и новости: 5 карточек на 1920, 4 на 1600, 3 на 1200, 2 на планшете, 1 на телефоне */
+.pn__track--proj, .pn__track--news { --cols: 5; --g: var(--space-md); gap: var(--g); grid-auto-columns: calc((100% - (var(--cols) - 1) * var(--g)) / var(--cols)); }
+@media (max-width: 1799px) { .pn__track--proj, .pn__track--news { --cols: 4; } }
+@media (max-width: 1399px) { .pn__track--proj, .pn__track--news { --cols: 3; } }
+@media (max-width: 1099px) { .pn__track--proj, .pn__track--news { --cols: 2; } }
+@media (max-width: 600px) { .pn__track--proj, .pn__track--news { --cols: 1.15; } }
+.pcard3__body h3 { font-size: 1rem; }
+.consult3 { margin-top: var(--section-gap-s); }
+
+/* 3D-иконки (tools/icons3d: three.js, контуры Lucide на стеклянной плашке) */
+.i3 { display: block; width: 3.25rem; height: 3.25rem; flex: none; object-fit: contain; filter: drop-shadow(0 6px 10px color-mix(in oklab, var(--color-navy) 18%, transparent)); }
+.hero3__perks .i3 { width: 3.5rem; height: 3.5rem; }
+.why__stats dd .i3 { width: 4.5rem; height: 4.5rem; filter: drop-shadow(0 8px 16px color-mix(in oklab, var(--color-ink) 45%, transparent)); }
+.flow3__icon--3d { width: 4.5rem; height: 4.5rem; border: 0; background: none; border-radius: 0; }
+.flow3__icon--3d .i3 { width: 100%; height: 100%; filter: drop-shadow(0 8px 16px color-mix(in oklab, var(--color-ink) 45%, transparent)); }
+.flow3__steps li:not(:nth-child(3n))::after { top: 2.25rem; left: calc(50% + 2.75rem); width: calc(100% - 5.5rem + var(--space-md)); }
+@media (prefers-reduced-motion: no-preference) {
+  .i3 { transition: transform var(--dur-short) var(--ease-out); }
+  .flow3__steps li:hover .i3, .why__stats div:hover .i3, .hero3__perks li:hover .i3 { transform: translateY(-3px) rotate(-3deg); }
+}

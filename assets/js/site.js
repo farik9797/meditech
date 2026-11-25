@@ -39,6 +39,8 @@
       const phone = form.elements.phone;
       let bad = false;
       [name, phone].forEach((f) => { if (!f) return; const ok = f === phone ? phoneOk(f.value) : f.value.trim().length > 1; f.setAttribute('aria-invalid', ok ? 'false' : 'true'); if (!ok) bad = true; });
+      const consent = form.elements.consent;
+      if (consent && !consent.checked) bad = true;
       if (bad) { err.hidden = false; (name && name.getAttribute('aria-invalid') === 'true' ? name : phone).focus(); return; }
       err.hidden = true;
       form.elements.page.value = location.href;
@@ -60,6 +62,14 @@
         err.hidden = false;
       } finally { form.classList.remove('is-busy'); }
     });
+  });
+
+  // ---- Карусели: стрелки прокручивают дорожку на ширину видимой части ----
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-scroll]');
+    if (!b) return;
+    const t = document.getElementById(b.dataset.scroll);
+    if (t) t.scrollBy({ left: Number(b.dataset.dir) * t.clientWidth * 0.8, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
 
   // ---- Модальное окно заявки ----

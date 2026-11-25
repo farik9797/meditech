@@ -712,3 +712,66 @@ html { font-size: clamp(15px, calc(9.6px + 0.444vw), 18px); }
 @media (max-width: 82rem) { .hdr__phone { display: none; } }
 .ftr__bottom { padding-right: calc(var(--gutter) + 4.5rem); }
 @media (max-width: 40rem) { .ftr__bottom { padding-right: var(--gutter); padding-bottom: 6rem; } }
+
+/* ===== Итерация 4: «Почему MEDITECH?», отдельные блоки проектов, новостей, FAQ и заявки ===== */
+.hero3__media video { z-index: 1; }
+.hero3__media::after { z-index: 2; }
+
+/* Почему MEDITECH — тёмная полоса со статистикой и фото справа */
+.why { margin-top: var(--section-gap-s); }
+.why__in { position: relative; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr) minmax(0, 1fr); align-items: center; gap: var(--space-xl); overflow: hidden; min-height: 15rem; padding-left: var(--space-2xl); border-radius: calc(var(--radius-card) * 1.5); background: linear-gradient(110deg, var(--color-navy) 0%, var(--color-navy-2) 60%, var(--color-blue-ink) 100%); color: var(--color-on-navy); }
+.why__head { display: grid; gap: var(--space-sm); justify-items: start; padding-block: var(--space-xl); }
+.why__head h2 { color: var(--color-white); font-size: clamp(1.5rem, 1rem + 1vw, 2.25rem); }
+.why__head p { color: var(--color-on-navy-muted); max-width: 28ch; }
+.why__stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-md); margin: 0; }
+.why__stats > div { display: flex; flex-direction: column-reverse; align-items: center; gap: var(--space-2xs); text-align: center; }
+.why__stats dd { display: grid; justify-items: center; gap: var(--space-xs); margin: 0; font-size: clamp(1.5rem, 1rem + 0.9vw, 2.125rem); font-weight: 800; color: var(--color-white); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.why__stats dd .i { width: 2.75rem; height: 2.75rem; color: var(--color-tg); stroke-width: 1.5; }
+.why__stats dt { font-size: 0.8125rem; color: var(--color-on-navy-muted); line-height: 1.3; }
+.why__img { align-self: stretch; -webkit-mask-image: linear-gradient(90deg, transparent 0%, var(--color-ink) 40%); mask-image: linear-gradient(90deg, transparent 0%, var(--color-ink) 40%); }
+.why__img img { width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 75rem) { .why__in { grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); } .why__img { display: none; } .why__in { padding-right: var(--space-xl); } }
+@media (max-width: 60rem) { .why__in { grid-template-columns: minmax(0, 1fr); padding: var(--space-xl) var(--space-lg); } .why__head { padding: 0; } .why__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--space-lg); } }
+
+/* заголовки разделов со стрелками справа */
+.sec-head3__end { display: flex; align-items: center; gap: var(--space-lg); }
+.sec-head3__end .arrows { margin: 0; }
+
+/* реализованные проекты — отдельный блок */
+.projects3 { padding-top: var(--section-gap-s); }
+.pn__track--proj { grid-auto-columns: calc((100% - 2 * var(--space-lg)) / 3); gap: var(--space-lg); }
+.pcard3 a { background: var(--color-white); border-radius: var(--radius-card); box-shadow: var(--shadow-card); overflow: hidden; align-content: start; gap: 0; transition: box-shadow var(--dur-short) var(--ease-out); }
+.pcard3 a:hover { box-shadow: var(--shadow-lift); }
+.pcard3__img { border-radius: 0; aspect-ratio: 16 / 10; }
+.pcard3__body { display: grid; gap: var(--space-xs); padding: var(--space-md) var(--space-lg) var(--space-lg); }
+.pcard3__body time { font-size: 0.75rem; font-weight: 600; color: var(--color-muted); }
+.pcard3__body h3 { font-size: 1.125rem; }
+.pcard3__body p { font-size: 0.875rem; color: var(--color-muted); }
+
+/* новости — отдельный блок, 4 в ряд */
+.news3 { padding-top: var(--section-gap-s); }
+.pn__track--news { grid-auto-columns: calc((100% - 3 * var(--space-md)) / 4); }
+@media (max-width: 60rem) { .pn__track--proj { grid-auto-columns: calc((100% - var(--space-lg)) / 2); } .pn__track--news { grid-auto-columns: calc((100% - var(--space-md)) / 2); } }
+@media (max-width: 40rem) { .pn__track--proj, .pn__track--news { grid-auto-columns: 82%; } .sec-head3 { flex-wrap: wrap; } .sec-head3__end .arrows { display: none; } }
+
+/* частые вопросы — отдельный блок */
+.faq4 { padding-top: var(--section-gap-s); }
+.faq4__in { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr); gap: var(--space-2xl); align-items: start; }
+.faq4__head { display: grid; gap: var(--space-sm); justify-items: start; position: sticky; top: 6rem; }
+.faq4__head h2 { font-size: clamp(1.5rem, 1rem + 1vw, 2.25rem); }
+.faq4__head p { color: var(--color-muted); max-width: 32ch; }
+.faq4__list .faq__list { gap: var(--space-sm); }
+@media (max-width: 60rem) { .faq4__in { grid-template-columns: minmax(0, 1fr); gap: var(--space-lg); } .faq4__head { position: static; } }
+
+/* заявка — отдельный блок */
+.order { padding-block: var(--section-gap-s) var(--section-gap); }
+.order__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: var(--space-2xl); align-items: center; padding: var(--space-2xl); border-radius: calc(var(--radius-card) * 1.5); background: radial-gradient(90% 120% at 0% 0%, var(--color-accent-soft) 0%, transparent 60%), var(--color-paper-2); }
+.order__text { display: grid; gap: var(--space-md); justify-items: start; }
+.order__text h2 { font-size: clamp(1.5rem, 1rem + 1vw, 2.25rem); }
+.order__text > p { color: var(--color-ink-2); max-width: 44ch; }
+.order__contacts { list-style: none; margin: var(--space-xs) 0 0; padding: 0; display: grid; gap: var(--space-sm); font-weight: 700; }
+.order__contacts li { display: flex; align-items: center; gap: var(--space-sm); }
+.order__contacts .i { color: var(--color-accent); }
+.order__contacts a { text-decoration: none; } .order__contacts a:hover { color: var(--color-accent); text-decoration: underline; }
+@media (max-width: 60rem) { .order__in { grid-template-columns: minmax(0, 1fr); padding: var(--space-xl) var(--space-lg); } }
+@media (max-width: 40rem) { .order__in { padding: var(--space-lg) var(--space-md); } }

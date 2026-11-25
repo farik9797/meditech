@@ -11,7 +11,7 @@
   --color-paper: #F5F9FD; --color-paper-2: #EAF2FA; --color-paper-3: #DCEAF6; --color-white: #FFFFFF;
   --color-ink: #0B1D3A; --color-ink-2: #2A3D5C; --color-muted: #52627A; --color-field-edge: #7F91A8;
   --color-rule: #D5E2EF; --color-navy: #0A2342; --color-navy-2: #12325C; --color-on-navy: #E8F1FA; --color-on-navy-muted: #A9BDD4;
-  --color-accent: #06788A; --color-accent-hover: #056474; --color-accent-ink: #FFFFFF; --color-accent-soft: #E6F5F7; --color-blue: #1C86C9; --color-blue-ink: #1A6FA8; --color-focus: #1A6FA8; --color-tg: #229ED9; --color-wa: #1FA855; --color-tg-ink: #167AAE; --color-wa-ink: #128444; --color-stock: #166C45; --color-order: #8A4F00;
+  --color-accent: #06788A; --color-accent-hover: #056474; --color-accent-ink: #FFFFFF; --color-accent-soft: #E6F5F7; --color-blue: #1C86C9; --color-blue-ink: #1A6FA8; --color-focus: #1A6FA8; --color-tg: #229ED9; --color-wa: #1FA855; --color-tg-ink: #167AAE; --color-wa-ink: #128444; --color-stock: #166C45; --color-order: #8A4F00; --color-stock-bg: #E3F1EA; --color-order-bg: #F6ECDD;
   --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif; --font-body: "Manrope", ui-sans-serif, system-ui, sans-serif; --font-outlier: var(--font-body);
   --radius-card: 1rem; --radius-ctl: 999px; --radius-sm: 0.625rem; --radius-pill: 999px; --rule-hair: 1px; --shadow-card: 0 1px 2px rgb(11 29 58 / 0.04), 0 8px 24px rgb(11 29 58 / 0.06); --shadow-lift: 0 2px 4px rgb(11 29 58 / 0.05), 0 16px 40px rgb(11 29 58 / 0.10);
   --tracking-display: -0.02em;

@@ -6,8 +6,9 @@
  * waive 67: false positive on Cyrillic sentence-case text ("Гарантийное…", "© MEDITECH…"), nothing is typed in capitals
  * waive 62: .mega is a CSS hover/focus-within menu, no script; the «Каталог» link itself opens the catalog page
  * waive 44d: the client set the layout to max-width 1920px with 30px side padding, so at 1920 the hero text starts 30px from the edge by request
+ * waive 58: the hero kicker above the headline comes from the client-approved concept v3
  * answered 46a: no numbers invented, stats render as «уточняется» slots */
-@import url("./tokens.css?v=4");
+@import url("./tokens.css?v=5");
 @import url("./base.css?v=4");
 
 /* ---------- базовое ---------- */
@@ -711,7 +712,7 @@ html { font-size: clamp(15px, calc(9.6px + 0.444vw), 18px); }
 @media (max-width: 90rem) { .hdr__phone { display: inline-flex; } }
 @media (max-width: 82rem) { .hdr__phone { display: none; } }
 .ftr__bottom { padding-right: calc(var(--gutter) + 4.5rem); }
-@media (max-width: 40rem) { .ftr__bottom { padding-right: var(--gutter); padding-bottom: 6rem; } }
+@media (max-width: 40rem) { .ftr__bottom { padding-right: var(--gutter); padding-bottom: var(--space-3xl); } }
 
 /* ===== Итерация 4: «Почему MEDITECH?», отдельные блоки проектов, новостей, FAQ и заявки ===== */
 .hero3__media video { z-index: 1; }
@@ -775,3 +776,27 @@ html { font-size: clamp(15px, calc(9.6px + 0.444vw), 18px); }
 .order__contacts a { text-decoration: none; } .order__contacts a:hover { color: var(--color-accent); text-decoration: underline; }
 @media (max-width: 60rem) { .order__in { grid-template-columns: minmax(0, 1fr); padding: var(--space-xl) var(--space-lg); } }
 @media (max-width: 40rem) { .order__in { padding: var(--space-lg) var(--space-md); } }
+
+/* ===== Аудит ui-ux-pro-max (25.11.2026): касание, читаемость, контраст ===== */
+/* корневой шрифт не меньше 16px на телефоне и планшете: основной текст ≥16px */
+html { font-size: clamp(16px, calc(9.6px + 0.444vw), 18px); }
+@media (min-width: 64.01rem) and (max-width: 90rem) { html { font-size: clamp(15px, calc(9.6px + 0.444vw), 16px); } }
+@media (max-width: 40rem) { html { font-size: 16px; } }
+/* зоны нажатия не меньше 44×44px при любом корневом шрифте */
+.btn, .btn--sm { min-height: max(44px, 2.75rem); }
+.hdr__icon, .hdr__burger, .social a, .totop, .arrow, .modal__close { min-width: 44px; min-height: 44px; }
+.check { min-height: 44px; }
+.crumbs a { display: inline-block; padding-block: var(--space-sm); margin-block: calc(-1 * var(--space-sm)); }
+.product__meta a, .order__contacts a, .ftr a { display: inline-block; padding-block: 0.375rem; margin-block: -0.375rem; }
+.lang a { display: inline-grid; place-items: center; min-width: 32px; min-height: 44px; }
+/* мелкий текст: даты и подписи не меньше 13px */
+.ncard3 time, .pcard3__body time, .ncard time, .tile__name small, .lead__note, .projects__fig figcaption, .product__gal-note { font-size: max(13px, 0.8125rem); }
+/* описания товаров и статьи на телефоне — 16px */
+@media (max-width: 60rem) { .rich, .product__short { font-size: 1rem; } }
+/* бейджи наличия: плотный фон, контраст ≥ 4.5:1 */
+.badge--stock { background: var(--color-stock-bg); color: var(--color-stock); }
+.badge--order { background: var(--color-order-bg); color: var(--color-order); }
+/* карточка товара: квадрат не растягивается под высокие фото */
+.pcard__img { position: relative; min-height: 0; overflow: hidden; }
+.pcard__img img { position: absolute; inset: var(--space-md); width: calc(100% - 2 * var(--space-md)); height: calc(100% - 2 * var(--space-md)); max-width: none; max-height: none; object-fit: contain; }
+.pcard__img .ph--prod { position: absolute; inset: var(--space-xs); height: auto; }

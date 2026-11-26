@@ -1,6 +1,8 @@
 // MEDITECH — прототип. Без зависимостей.
 (() => {
   'use strict';
+  const UZ = document.documentElement.lang === 'uz';
+  const L = (ru, uz) => (UZ ? uz : ru);
 
   // ---- Аналитика: цели. ID счётчиков задать перед запуском. ----
   const YM_ID = null; // номер счётчика Метрики
@@ -58,7 +60,7 @@
         form.querySelector('.lead__ok').hidden = false;
         track(form.dataset.source === 'download_catalog' ? 'download_catalog' : 'lead_' + data.source, { product: data.product || '' });
       } catch (ex) {
-        err.textContent = 'Не удалось отправить. Позвоните нам или напишите в мессенджер.';
+        err.textContent = L('Не удалось отправить. Позвоните нам или напишите в мессенджер.', 'Yuborib boʻlmadi. Bizga qoʻngʻiroq qiling yoki messenjerda yozing.');
         err.hidden = false;
       } finally { form.classList.remove('is-busy'); }
     });
@@ -109,11 +111,11 @@
   // ---- Поиск во всплывающем окне: живые результаты по названию, модели, бренду, разделу ----
   const sm = document.getElementById('search-modal');
   if (sm) {
-    const root = sm.dataset.root || './';
+    const root = sm.dataset.root || './', aroot = sm.dataset.assetRoot || root;
     const input = sm.querySelector('#sm-q'), list = sm.querySelector('[data-search-list]'), hint = sm.querySelector('[data-search-hint]');
     const empty = sm.querySelector('[data-search-empty]'), all = sm.querySelector('[data-search-all]');
     let index = null;
-    const load = () => index ? Promise.resolve(index) : fetch(root + 'assets/search.json').then((r) => r.json()).then((d) => (index = d.map((x) => ({ ...x, h: (x.n + ' ' + x.b + ' ' + x.c).toLowerCase() }))));
+    const load = () => index ? Promise.resolve(index) : fetch(aroot + 'assets/search.json').then((r) => r.json()).then((d) => (index = d.map((x) => ({ ...x, h: (x.n + ' ' + x.b + ' ' + x.c + ' ' + x.cu).toLowerCase() }))));
     const esc = (t) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const mark = (t, q) => { const i = t.toLowerCase().indexOf(q); return i < 0 ? esc(t) : esc(t.slice(0, i)) + '<mark>' + esc(t.slice(i, i + q.length)) + '</mark>' + esc(t.slice(i + q.length)); };
     const render = () => {
@@ -124,7 +126,7 @@
       const res = index.filter((x) => words.every((w) => x.h.includes(w))).slice(0, 8);
       all.href = root + 'catalog/?q=' + encodeURIComponent(q);
       empty.hidden = res.length > 0;
-      list.innerHTML = res.map((x) => `<li><a href="${root}${x.u}">${x.i ? `<img src="${root}${x.i}" alt="" width="56" height="56" loading="lazy">` : '<span class="ph"></span>'}<span><strong>${mark(x.n, words[0])}</strong><small>${esc([x.b, x.c].filter(Boolean).join(', '))}</small></span></a></li>`).join('');
+      list.innerHTML = res.map((x) => `<li><a href="${root}${x.u}">${x.i ? `<img src="${aroot}${x.i}" alt="" width="56" height="56" loading="lazy">` : '<span class="ph"></span>'}<span><strong>${mark(x.n, words[0])}</strong><small>${esc([x.b, UZ ? x.cu : x.c].filter(Boolean).join(', '))}</small></span></a></li>`).join('');
     };
     const open = () => { if (typeof sm.showModal !== 'function') { location.href = root + 'catalog/#q'; return; } sm.showModal(); input.focus(); load().then(render); track('open_search'); };
     document.addEventListener('click', (e) => {
@@ -167,7 +169,7 @@
 
   // ---- Модальное окно заявки ----
   const modal = document.getElementById('lead-modal');
-  const TITLES = { consult: 'Получить консультацию', price: 'Запросить цену / КП', equip: 'Заявка на комплексное оснащение' };
+  const TITLES = { consult: L('Получить консультацию', 'Maslahat olish'), price: L('Запросить цену / КП', 'Narx / TT soʻrash'), equip: L('Заявка на оснащение под ключ', 'Toʻliq jihozlash uchun ariza') };
   document.addEventListener('click', (e) => {
     const b = e.target.closest('[data-lead]');
     if (!b || !modal) return;
@@ -179,7 +181,7 @@
     form.elements.product.value = b.dataset.product || '';
     modal.querySelector('.modal__title').textContent = TITLES[kind] || TITLES.consult;
     const pr = modal.querySelector('.modal__product');
-    pr.hidden = !b.dataset.product; pr.textContent = b.dataset.product ? 'Товар: ' + b.dataset.product : '';
+    pr.hidden = !b.dataset.product; pr.textContent = b.dataset.product ? L('Товар: ', 'Mahsulot: ') + b.dataset.product : '';
     if (typeof modal.showModal === 'function') { modal.showModal(); form.elements.name.focus(); }
     track('open_form_' + kind);
   });

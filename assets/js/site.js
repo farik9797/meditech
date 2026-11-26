@@ -219,24 +219,24 @@
     const empty = root.querySelector('[data-empty]');
     const params = new URLSearchParams(location.search);
     if (params.get('q')) form.elements.q.value = params.get('q');
-    if (params.get('cat') && form.elements.cat) form.elements.cat.value = params.get('cat');
+    params.getAll('cat').forEach((v) => { const c = form.querySelector(`input[name="cat"][value="${CSS.escape(v)}"]`); if (c) c.checked = true; });
     params.getAll('brand').forEach((b) => { const c = form.querySelector(`input[name="brand"][value="${CSS.escape(b)}"]`); if (c) c.checked = true; });
     if (params.has('stock')) { const r = form.querySelector(`input[name="stock"][value="${CSS.escape(params.get('stock'))}"]`); if (r) r.checked = true; }
 
     const apply = () => {
       const q = form.elements.q.value.trim().toLowerCase();
-      const cat = form.elements.cat ? form.elements.cat.value : '';
+      const catsSel = [...form.querySelectorAll('input[name="cat"]:checked')].map((x) => x.value);
       const brandsSel = [...form.querySelectorAll('input[name="brand"]:checked')].map((x) => x.value);
       const stock = (form.querySelector('input[name="stock"]:checked') || {}).value || '';
       let n = 0;
       cards.forEach((c) => {
-        const ok = (!q || c.dataset.name.includes(q)) && (!cat || c.dataset.cat === cat) && (!brandsSel.length || brandsSel.includes(c.dataset.brand)) && (stock === '' || c.dataset.stock === stock);
+        const ok = (!q || c.dataset.name.includes(q)) && (!catsSel.length || catsSel.includes(c.dataset.cat)) && (!brandsSel.length || brandsSel.includes(c.dataset.brand)) && (stock === '' || c.dataset.stock === stock);
         c.hidden = !ok; if (ok) n++;
       });
       count.textContent = n; empty.hidden = n > 0;
       if (window.ScrollTrigger) requestAnimationFrame(() => window.ScrollTrigger.refresh());
       const u = new URLSearchParams();
-      if (q) u.set('q', q); if (cat) u.set('cat', cat); brandsSel.forEach((b) => u.append('brand', b)); if (stock !== '') u.set('stock', stock);
+      if (q) u.set('q', q); catsSel.forEach((v) => u.append('cat', v)); brandsSel.forEach((b) => u.append('brand', b)); if (stock !== '') u.set('stock', stock);
       history.replaceState(null, '', u.toString() ? '?' + u : location.pathname);
     };
     form.addEventListener('input', apply);
